@@ -18,7 +18,7 @@ spec:
       source:
         repoURL: https://github.com/mohamedbstar413/homelab.git
         targetRevision: HEAD
-        path: '{{path}}/helm'        # {{path}} = microservices/auth-service
+        path: '{{path}}'        # {{path}} = microservices/auth-service
       destination:
         server: https://kubernetes.default.svc
         namespace: 'backend'              # All apps will be deployed to the 'backend' namespace
