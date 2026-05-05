@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: patient-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: patient-service
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: patient-service
+        tier: backend
+    spec:
+      containers:
+        - name: patient-service
+          image: bstar999/patient-service:latest
+          ports:
+            - containerPort: 8080

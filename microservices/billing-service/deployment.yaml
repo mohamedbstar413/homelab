@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: analytics-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: billing-service
+      tier: backend
+  template:
+    metadata:
+      labels:
+        app: billing-service
+        tier: backend
+    spec:
+      containers:
+        - name: billing-service
+          image: bstar999/billing-service:latest
+          ports:
+            - containerPort: 8080
+            - containerPort: 9001
