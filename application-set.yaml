@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: all-microservices-appset
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: https://github.com/mohamedbstar413/homelab.git
+        revision: HEAD
+        directories:
+          - path: microservices/*         # Match all direct subdirs of argo, e.g., argo/auth-service, argo/payment-service
+  template:
+    metadata:
+      name: '{{path.basename}}'      # e.g., auth-service
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/mohamedbstar413/homelab.git
+        targetRevision: HEAD
+        path: '{{path}}/helm'        # {{path}} = microservices/auth-service
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: 'backend'              # All apps will be deployed to the 'backend' namespace
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
