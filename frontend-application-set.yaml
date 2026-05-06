@@ -9,7 +9,7 @@ spec:
         repoURL: https://github.com/mohamedbstar413/homelab.git
         revision: HEAD
         directories:
-          - path: frontend/*         # Match all direct subdirs of frontend
+          - path: frontend        # Match all direct subdirs of frontend
   template:
     metadata:
       name: '{{path.basename}}'      # e.g., frontend
