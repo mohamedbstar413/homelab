@@ -25,4 +25,4 @@ spec:
               targetPort: 8080
           env:
           - name: JWT_SECRET
-            value: "mysecretkey"
+            value: "K7gNU3sdo+OL0wNhqoVWhr3g6s1xYv72ol/pe/Unols="
