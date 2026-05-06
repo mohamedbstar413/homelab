@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: bstar413/test-frontend:latest
+          image: bstar999/test-frontend:latest
           ports:
             - containerPort: 8080
               name: http
