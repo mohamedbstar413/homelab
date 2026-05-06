@@ -19,4 +19,6 @@ spec:
           image: bstar999/billing-service:latest
           ports:
             - containerPort: 8080
+              name: http
             - containerPort: 9001
+              name: grpc
