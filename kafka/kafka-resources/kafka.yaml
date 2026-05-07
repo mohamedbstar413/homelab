@@ -68,15 +68,15 @@ spec:
     # ── JVM ────────────────────────────────
     # Xms = Xmx to avoid heap resizing at runtime
     # Keep under 8Gi — let the OS use rest for page cache
-    jvmOptions:
-      -Xms: 4096m
-      -Xmx: 4096m
-      -XX:
-        UseG1GC: true
-        MaxGCPauseMillis: 20
-        InitiatingHeapOccupancyPercent: 35
-        ExplicitGCInvokesConcurrent: true
-      gcLoggingEnabled: false
+jvmOptions:
+  -Xms: "4096m"
+  -Xmx: "4096m"
+  -XX:
+    UseG1GC: "true"                        # string, not boolean
+    MaxGCPauseMillis: "20"                 # string, not integer
+    InitiatingHeapOccupancyPercent: "35"   # string, not integer
+    ExplicitGCInvokesConcurrent: "true"    # string, not boolean
+  gcLoggingEnabled: false
 
     # ── Metrics ────────────────────────────
     metricsConfig:
@@ -98,8 +98,8 @@ spec:
         memory: 2Gi
         cpu: 500m
     jvmOptions:
-      -Xms: 512m
-      -Xmx: 1024m
+      -Xms: "512m"
+      -Xmx: "1024m"
     metricsConfig:
       type: jmxPrometheusExporter
       valueFrom:
