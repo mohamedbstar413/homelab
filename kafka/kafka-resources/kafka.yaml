@@ -3,6 +3,8 @@ kind: Kafka
 metadata:
   name: kafka-cluster
   namespace: kafka
+  annotations:
+    strimzi.io/node-pools: enabled
 spec:
 
   # ─────────────────────────────────────────

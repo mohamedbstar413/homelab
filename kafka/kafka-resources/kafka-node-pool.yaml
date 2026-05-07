@@ -1,0 +1,29 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaNodePool
+metadata:
+  name: kafka
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka-cluster   # must match your Kafka CR name
+spec:
+  replicas: 3
+  roles:
+    - broker
+  storage:
+    type: ephemeral
+  resources:
+    requests:
+      memory: 4Gi
+      cpu: 500m
+    limits:
+      memory: 8Gi
+      cpu: 2000m
+  jvmOptions:
+    -Xms: "4096m"
+    -Xmx: "4096m"
+    -XX:
+      UseG1GC: "true"
+      MaxGCPauseMillis: "20"
+      InitiatingHeapOccupancyPercent: "35"
+      ExplicitGCInvokesConcurrent: "true"
+    gcLoggingEnabled: false
