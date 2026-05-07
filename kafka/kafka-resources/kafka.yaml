@@ -5,34 +5,22 @@ metadata:
   namespace: kafka
   annotations:
     strimzi.io/node-pools: enabled
+    strimzi.io/kraft: enabled
 spec:
-
-  # ─────────────────────────────────────────
-  # KAFKA BROKERS
-  # ─────────────────────────────────────────
   kafka:
     version: 4.2.0
-
-    # ── Listeners ──────────────────────────
+    metadataVersion: 4.2-IV3
     listeners:
-
-      # Internal plaintext — for services inside the cluster
-      # that don't need encryption (e.g. low-latency internal apps)
       - name: plain
         port: 9092
         type: internal
         tls: false
-
-      # Internal TLS — encrypted internal traffic
       - name: tls
         port: 9093
         type: internal
         tls: true
         authentication:
-          type: tls                  # mTLS — clients use certificates
-
-      # External — for apps outside the cluster
-      # Creates one LoadBalancer service per broker + one bootstrap
+          type: tls
       - name: external
         port: 9094
         type: ingress
@@ -47,58 +35,11 @@ spec:
               host: broker-1.demo.local
             - broker: 2
               host: broker-2.demo.local
-
-   
-
-    # ── Authorization ──────────────────────
     authorization:
       type: simple
       superUsers:
-        - CN=kafka-admin             # TLS user
-        - admin                      # SCRAM user
-
-    
-
-
-  # ─────────────────────────────────────────
-  # ZOOKEEPER
-  # Remove this entire block if using KRaft
-  # ─────────────────────────────────────────
-  zookeeper:
-    replicas: 3
-    resources:
-      requests:
-        memory: 1Gi
-        cpu: 200m
-      limits:
-        memory: 2Gi
-        cpu: 500m
-    jvmOptions:
-      -Xms: "512m"
-      -Xmx: "1024m"
-    metricsConfig:
-      type: jmxPrometheusExporter
-      valueFrom:
-        configMapKeyRef:
-          name: zookeeper-metrics-config
-          key: zookeeper-metrics-config.yml
-    logging:
-      type: inline
-      loggers:
-        zookeeper.root.logger: INFO
-    livenessProbe:
-      initialDelaySeconds: 15
-      periodSeconds: 10
-      timeoutSeconds: 5
-    readinessProbe:
-      initialDelaySeconds: 20
-      periodSeconds: 10
-      timeoutSeconds: 5
-
-  # ─────────────────────────────────────────
-  # ENTITY OPERATOR
-  # Manages KafkaTopic and KafkaUser CRDs
-  # ─────────────────────────────────────────
+        - CN=kafka-admin
+        - admin
   entityOperator:
     topicOperator:
       reconciliationIntervalMs: 60000
@@ -113,7 +54,6 @@ spec:
         type: inline
         loggers:
           rootLogger.level: INFO
-
     userOperator:
       reconciliationIntervalMs: 60000
       resources:
@@ -127,18 +67,6 @@ spec:
         type: inline
         loggers:
           rootLogger.level: INFO
-
-    template:
-      pod:
-        metadata:
-          labels:
-            app: entity-operator
-
-
-  # ─────────────────────────────────────────
-  # KAFKA EXPORTER
-  # Consumer lag metrics for Prometheus
-  # ─────────────────────────────────────────
   kafkaExporter:
     topicRegex: ".*"
     groupRegex: ".*"
@@ -151,24 +79,13 @@ spec:
         cpu: 200m
     logging: info
     enableSaramaLogging: false
-    template:
-      pod:
-        metadata:
-          annotations:
-            prometheus.io/scrape: "true"
-            prometheus.io/port: "9404"
-
-  # ─────────────────────────────────────────
-  # CERTIFICATE AUTHORITIES
-  # ─────────────────────────────────────────
   clusterCa:
     generateCertificateAuthority: true
-    validityDays: 3650              # 10 years for cluster CA
+    validityDays: 3650
     renewalDays: 30
     certificateExpirationPolicy: replace-key
-
   clientsCa:
     generateCertificateAuthority: true
-    validityDays: 365               # 1 year for client certs
+    validityDays: 365
     renewalDays: 30
     certificateExpirationPolicy: replace-key
