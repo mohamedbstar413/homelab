@@ -29,12 +29,12 @@ spec:
           bootstrap:
             host: kafka.demo.local
           brokers:
-            - broker: 0
-              host: broker-0.demo.local
-            - broker: 1
-              host: broker-1.demo.local
-            - broker: 2
-              host: broker-2.demo.local
+            - broker: 3
+              host: broker-3.demo.local
+            - broker: 4
+              host: broker-4.demo.local
+            - broker: 5
+              host: broker-5.demo.local
     authorization:
       type: simple
       superUsers:
