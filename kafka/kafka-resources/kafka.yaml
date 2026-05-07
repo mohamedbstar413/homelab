@@ -12,9 +12,6 @@ spec:
   # ─────────────────────────────────────────
   kafka:
     version: 4.2.0
-    replicas: 3
-    storage:
-      type: ephemeral    # for local/dev use
 
     # ── Listeners ──────────────────────────
     listeners:
@@ -60,28 +57,7 @@ spec:
         - CN=kafka-admin             # TLS user
         - admin                      # SCRAM user
 
-    # ── Resources ──────────────────────────
-    resources:
-      requests:
-        memory: 4Gi
-        cpu: 500m
-      limits:
-        memory: 8Gi
-        cpu: 2000m
-
-    # ── JVM ────────────────────────────────
-    # Xms = Xmx to avoid heap resizing at runtime
-    # Keep under 8Gi — let the OS use rest for page cache
-    jvmOptions:
-      -Xms: "4096m"
-      -Xmx: "4096m"
-      -XX:
-        UseG1GC: "true"                        # string, not boolean
-        MaxGCPauseMillis: "20"                 # string, not integer
-        InitiatingHeapOccupancyPercent: "35"   # string, not integer
-        ExplicitGCInvokesConcurrent: "true"    # string, not boolean
-      gcLoggingEnabled: false
-
+    
 
 
   # ─────────────────────────────────────────
