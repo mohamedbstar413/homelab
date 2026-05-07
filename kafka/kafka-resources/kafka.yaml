@@ -1,0 +1,198 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: kafka-cluster
+  namespace: kafka
+spec:
+
+  # ─────────────────────────────────────────
+  # KAFKA BROKERS
+  # ─────────────────────────────────────────
+  kafka:
+    version: 4.2.0
+    replicas: 3
+
+    # ── Listeners ──────────────────────────
+    listeners:
+
+      # Internal plaintext — for services inside the cluster
+      # that don't need encryption (e.g. low-latency internal apps)
+      - name: plain
+        port: 9092
+        type: internal
+        tls: false
+
+      # Internal TLS — encrypted internal traffic
+      - name: tls
+        port: 9093
+        type: internal
+        tls: true
+        authentication:
+          type: tls                  # mTLS — clients use certificates
+
+      # External — for apps outside the cluster
+      # Creates one LoadBalancer service per broker + one bootstrap
+      - name: external
+        port: 9094
+        type: ingress
+        tls: true
+        configuration:
+          bootstrap:
+            host: kafka.demo.local
+          brokers:
+            - broker: 0
+              host: broker-0.demo.local
+            - broker: 1
+              host: broker-1.demo.local
+            - broker: 2
+              host: broker-2.demo.local
+
+   
+
+    # ── Authorization ──────────────────────
+    authorization:
+      type: simple
+      superUsers:
+        - CN=kafka-admin             # TLS user
+        - admin                      # SCRAM user
+
+    # ── Resources ──────────────────────────
+    resources:
+      requests:
+        memory: 4Gi
+        cpu: 500m
+      limits:
+        memory: 8Gi
+        cpu: 2000m
+
+    # ── JVM ────────────────────────────────
+    # Xms = Xmx to avoid heap resizing at runtime
+    # Keep under 8Gi — let the OS use rest for page cache
+    jvmOptions:
+      -Xms: 4096m
+      -Xmx: 4096m
+      -XX:
+        UseG1GC: true
+        MaxGCPauseMillis: 20
+        InitiatingHeapOccupancyPercent: 35
+        ExplicitGCInvokesConcurrent: true
+      gcLoggingEnabled: false
+
+    # ── Metrics ────────────────────────────
+    metricsConfig:
+      type: jmxPrometheusExporter
+
+
+
+  # ─────────────────────────────────────────
+  # ZOOKEEPER
+  # Remove this entire block if using KRaft
+  # ─────────────────────────────────────────
+  zookeeper:
+    replicas: 3
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: 200m
+      limits:
+        memory: 2Gi
+        cpu: 500m
+    jvmOptions:
+      -Xms: 512m
+      -Xmx: 1024m
+    metricsConfig:
+      type: jmxPrometheusExporter
+      valueFrom:
+        configMapKeyRef:
+          name: zookeeper-metrics-config
+          key: zookeeper-metrics-config.yml
+    logging:
+      type: inline
+      loggers:
+        zookeeper.root.logger: INFO
+    livenessProbe:
+      initialDelaySeconds: 15
+      periodSeconds: 10
+      timeoutSeconds: 5
+    readinessProbe:
+      initialDelaySeconds: 20
+      periodSeconds: 10
+      timeoutSeconds: 5
+
+  # ─────────────────────────────────────────
+  # ENTITY OPERATOR
+  # Manages KafkaTopic and KafkaUser CRDs
+  # ─────────────────────────────────────────
+  entityOperator:
+    topicOperator:
+      reconciliationIntervalMs: 60000
+      resources:
+        requests:
+          memory: 256Mi
+          cpu: 100m
+        limits:
+          memory: 512Mi
+          cpu: 500m
+      logging:
+        type: inline
+        loggers:
+          rootLogger.level: INFO
+
+    userOperator:
+      reconciliationIntervalMs: 60000
+      resources:
+        requests:
+          memory: 256Mi
+          cpu: 100m
+        limits:
+          memory: 512Mi
+          cpu: 500m
+      logging:
+        type: inline
+        loggers:
+          rootLogger.level: INFO
+
+    template:
+      pod:
+        metadata:
+          labels:
+            app: entity-operator
+
+
+  # ─────────────────────────────────────────
+  # KAFKA EXPORTER
+  # Consumer lag metrics for Prometheus
+  # ─────────────────────────────────────────
+  kafkaExporter:
+    topicRegex: ".*"
+    groupRegex: ".*"
+    resources:
+      requests:
+        memory: 64Mi
+        cpu: 50m
+      limits:
+        memory: 128Mi
+        cpu: 200m
+    logging: info
+    enableSaramaLogging: false
+    template:
+      pod:
+        metadata:
+          annotations:
+            prometheus.io/scrape: "true"
+            prometheus.io/port: "9404"
+
+  # ─────────────────────────────────────────
+  # CERTIFICATE AUTHORITIES
+  # ─────────────────────────────────────────
+  clusterCa:
+    generateCertificateAuthority: true
+    validityDays: 3650              # 10 years for cluster CA
+    renewalDays: 30
+    certificateExpirationPolicy: replace-key
+
+  clientsCa:
+    generateCertificateAuthority: true
+    validityDays: 365               # 1 year for client certs
+    renewalDays: 30
+    certificateExpirationPolicy: replace-key
