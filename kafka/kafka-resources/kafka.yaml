@@ -31,10 +31,6 @@ spec:
           brokers:
             - broker: 3
               host: broker-3.demo.local
-            - broker: 4
-              host: broker-4.demo.local
-            - broker: 5
-              host: broker-5.demo.local
     authorization:
       type: simple
       superUsers:
