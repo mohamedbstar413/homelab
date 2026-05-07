@@ -1,0 +1,30 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  name: my-topic
+  namespace: kafka
+  labels:
+    strimzi.io/cluster: kafka-cluster   # must match your Kafka CR name
+spec:
+  partitions: 1
+  replicas: 0
+  config:
+    # Retention
+    retention.ms: "604800000"           # 7 days
+    retention.bytes: "-1"               # no size limit
+
+    # Cleanup
+    cleanup.policy: delete              # delete | compact | delete,compact
+
+    # Replication safety
+    min.insync.replicas: "1"           # 1 for single broker, 2+ for multi-broker
+
+    # Segment
+    segment.bytes: "1073741824"         # 1Gi per segment file
+    segment.ms: "604800000"             # roll segment after 7 days
+
+    # Compression
+    compression.type: producer          # inherit from producer
+
+    # Message size
+    max.message.bytes: "1048576"        # 1Mi max message size
