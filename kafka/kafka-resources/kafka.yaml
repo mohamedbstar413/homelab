@@ -78,10 +78,6 @@ jvmOptions:
     ExplicitGCInvokesConcurrent: "true"    # string, not boolean
   gcLoggingEnabled: false
 
-    # ── Metrics ────────────────────────────
-    metricsConfig:
-      type: jmxPrometheusExporter
-
 
 
   # ─────────────────────────────────────────
