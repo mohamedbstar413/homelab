@@ -7,7 +7,7 @@ spec:
   project: default
 
   source:
-    repoURL: https://github.com/mohamedabdelsatar/homelab.git
+    repoURL: https://github.com/mohamedbstar413/homelab.git
     targetRevision: main
     path: utils-apps
 
