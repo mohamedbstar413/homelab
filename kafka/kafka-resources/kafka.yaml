@@ -23,14 +23,9 @@ spec:
           type: tls
       - name: external
         port: 9094
-        type: ingress
+        type: loadbalancer 
         tls: true
-        configuration:
-          bootstrap:
-            host: kafka.demo.local
-          brokers:
-            - broker: 3
-              host: broker-3.demo.local
+        
     authorization:
       type: simple
       superUsers:
