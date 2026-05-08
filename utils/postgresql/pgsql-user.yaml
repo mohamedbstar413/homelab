@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: myuser-secret
+  namespace: postgresql
 type: kubernetes.io/basic-auth
 stringData:
   username: myuser
