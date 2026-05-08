@@ -18,8 +18,8 @@ spec:
         name: myuser-secret     # k8s secret with credentials
 
   storage:
-    size: 10Gi
-    storageClass: fast-ssd
+    size: 1Gi
+    storageClass: lh-wfc-ret-sc
 
   resources:
     requests:
