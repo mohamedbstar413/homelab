@@ -1,0 +1,11 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: lh-wfc-ret-sc
+
+provisioner: driver.longhorn.io
+
+allowVolumeExpansion: true
+reclaimPolicy: Retain
+
+volumeBindingMode: WaitForFirstConsumer
