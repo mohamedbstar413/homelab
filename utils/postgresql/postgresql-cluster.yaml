@@ -20,7 +20,7 @@ spec:
 
   storage:
     size: 1Gi
-    storageClass: lh-wfc-ret-sc
+    storageClass: standard
 
   resources:
     requests:
