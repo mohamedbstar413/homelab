@@ -8,4 +8,7 @@ provisioner: driver.longhorn.io
 allowVolumeExpansion: true
 reclaimPolicy: Retain
 
+parameters:
+  numberOfReplicas: "1"
+
 volumeBindingMode: WaitForFirstConsumer
