@@ -24,5 +24,17 @@ spec:
             - containerPort: 8080
               targetPort: 8080
           env:
+          - name: SPRING_DATASOURCE_URL
+            value: "jdbc:postgresql:pgsql-cluster-rw.postgresql.svc.cluster.local:5432/authdb"
+          - name: SPRING_DATASOURCE_USERNAME
+            value: myuser
+          - name: SPRING_DATASOURCE_PASSWORD
+            value: s3cr3t
+          - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+            value: update
+          - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+            value: kafka-cluster-kafka-bootstrap:9092
+          - name: SPRING_PROFILES_ACTIVE
+            value: docker
           - name: JWT_SECRET
-            value: "K7gNU3sdo+OL0wNhqoVWhr3g6s1xYv72ol/pe/Unols="
+            value: Y2hhVEc3aHJnb0hYTzMyZ2ZqVkpiZ1RkZG93YWxrUkM=

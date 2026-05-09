@@ -22,3 +22,8 @@ spec:
               name: http
             - containerPort: 9001
               name: grpc
+          env:
+            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
+              value: "kafka-cluster-kafka-bootstrap.kafka.svc.cluster.local:9092"
+            - name: SPRING_PROFILES_ACTIVE
+              value: docker
