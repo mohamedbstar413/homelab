@@ -1,0 +1,23 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: elasticsearch-cluster
+spec:
+  version: 8.13.0
+  nodeSets:
+    - name: masters
+      count: 1
+      config:
+        node.roles: ["master"]
+      podTemplate:
+        spec:
+          containers:
+            - name: elasticsearch-master
+    - name: data
+      count: 1
+      config:
+        node.roles: ["data"]
+      podTemplate:
+        spec:
+          containers:
+            - name: elasticsearch-data
