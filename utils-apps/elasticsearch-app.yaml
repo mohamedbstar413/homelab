@@ -9,7 +9,7 @@ spec:
 
   source:
     repoURL: https://github.com/mohamedbstar413/homelab.git
-    targetRevision: main
+    targetRevision: HEAD
     path: utils/elasticsearch
 
   destination:
