@@ -9,9 +9,35 @@ spec:
       count: 1
       config:
         node.roles: ["master"]
+
+      volumeClaimTemplates:
+        - metadata:
+            name: elasticsearch-data
+          spec:
+            accessModes:
+              - ReadWriteOnce
+
+            storageClassName: standard
+
+            resources:
+              requests:
+                storage: 3Gi
       
     - name: data
       count: 1
       config:
         node.roles: ["data"]
+      
+      volumeClaimTemplates:
+        - metadata:
+            name: elasticsearch-data
+          spec:
+            accessModes:
+              - ReadWriteOnce
+
+            storageClassName: standard
+
+            resources:
+              requests:
+                storage: 3Gi
 
